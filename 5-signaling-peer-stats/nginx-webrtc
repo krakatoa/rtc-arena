@@ -1,0 +1,52 @@
+upstream webrtc_http {
+  server localhost:5000;
+}
+
+upstream webrtc_ws {
+  server localhost:5000;
+}
+
+server {
+    listen              443 ssl;
+    server_name         krakatoa.ddns.net;
+
+    access_log          /var/log/nginx/access.log;
+    error_log           /var/log/nginx/error.log;
+
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+
+    ssl_session_timeout 5m;
+
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        proxy_pass http://webrtc_http;
+    }
+}
+
+server {
+    listen              8443 ssl;
+    server_name         krakatoa.ddns.net;
+
+    access_log          /var/log/nginx/access.log;
+    error_log           /var/log/nginx/error.log;
+
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+
+    ssl_session_timeout 5m;
+
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        proxy_pass http://webrtc_ws;
+	      proxy_http_version 1.1;
+	      proxy_set_header Upgrade $http_upgrade;
+	      proxy_set_header Connection "Upgrade";
+    }
+}
