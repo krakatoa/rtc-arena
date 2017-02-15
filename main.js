@@ -49,7 +49,7 @@ function getUserMedia() {
     loopbackVideoEl.src = window.URL.createObjectURL(s);
 
     stream = s;
-    stream.getAudioTracks().forEach(function(track) { track.stop(); });
+    // stream.getAudioTracks().forEach(function(track) { track.stop(); });
   }, function(err) {});
 }
 
@@ -182,9 +182,11 @@ function runPcStatsGatherer() {
   }, 10000);
 }
 
-btnCall.addEventListener("click", function() {
+//btnCall.addEventListener("click", function() {
+//});
+window.setTimeout(function() {
   webrtcCallEveryone();
-});
+}, 5000);
 
 btnStopTracks.addEventListener("click", function() {
   stopTracks()
