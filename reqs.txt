@@ -1,4 +1,6 @@
 pip install flask
 pip install flask-socketio
 pip install gevent gevent-websocket
-pip install flask-sslify
+pip install redis
+
+sudo apt-get install nginx
