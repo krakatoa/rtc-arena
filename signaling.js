@@ -5,6 +5,17 @@ socket.on('connect', function(msg) {
   socket.emit('join', { user: queryParams().user, room: queryParams().room });
 });
 
+window.addEventListener("beforeunload", function (e) {
+  var confirmationMessage = "Seguro?";
+
+  (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+  return confirmationMessage;                            //Webkit, Safari, Chrome
+});
+
+window.onunload = function() {
+  socket.emit('leave', { user: queryParams().user, room: queryParams().room });
+};
+
 socket.on('disconnect', function(msg) {
   console.log("disconnected!");
 });
@@ -18,8 +29,14 @@ socket.on('message', function(msg) {
       currentUsers.forEach(function(username) {
         prepareConnectionFor(username);
       });
-    //default:
-    //  console.log(msg);
+      break;
+    case 'leaved':
+      console.log("user " + msg.user + " leaved.");
+      removeConnectionFor(msg.user);
+      break;
+    default:
+      console.log('unhandled msg: ');
+      console.log(msg);
   }
 });
 

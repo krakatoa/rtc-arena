@@ -53,10 +53,13 @@ def on_join(json):
 
 @socketio.on('leave')
 def on_leave(json):
+  user = json['user']
+  room = json['room']
   leave_room(room)
   json['event'] = 'leaved'
 
   r.srem('room:' + room, user)
+  v, current_users = r.sscan('room:' + room)
   json['currentUsers'] = current_users
 
   send(json, room=room)
